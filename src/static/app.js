@@ -476,7 +476,9 @@ document.addEventListener("DOMContentLoaded", () => {
   function generateShareUrls(activityName, activityDetails) {
     const formattedSchedule = formatSchedule(activityDetails);
     const currentUrl = window.location.origin + window.location.pathname;
-    const shareText = `Check out ${activityName} at Mergington High School! ${activityDetails.description.substring(0, 100)}... Schedule: ${formattedSchedule}`;
+    const description = activityDetails.description || '';
+    const truncatedDesc = description.length > 100 ? description.substring(0, 100) + '...' : description;
+    const shareText = `Check out ${activityName} at Mergington High School! ${truncatedDesc} Schedule: ${formattedSchedule}`;
     const shareTitle = `${activityName} - Mergington High School`;
     
     return {
@@ -581,13 +583,13 @@ document.addEventListener("DOMContentLoaded", () => {
       </div>
       <div class="social-share-container">
         <button class="social-share-button twitter" data-activity="${name}" data-platform="twitter" title="Share on Twitter">
-          𝕏
+          ✕
         </button>
         <button class="social-share-button facebook" data-activity="${name}" data-platform="facebook" title="Share on Facebook">
-          f
+          ❱❱
         </button>
         <button class="social-share-button linkedin" data-activity="${name}" data-platform="linkedin" title="Share on LinkedIn">
-          in
+          ⓘⓝ
         </button>
         <button class="social-share-button email" data-activity="${name}" data-platform="email" title="Share via Email">
           ✉
