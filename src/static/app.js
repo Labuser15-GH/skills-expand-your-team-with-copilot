@@ -477,13 +477,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const formattedSchedule = formatSchedule(activityDetails);
     const currentUrl = window.location.origin + window.location.pathname;
     const description = activityDetails.description || '';
-    const truncatedDesc = description.length > 100 ? description.substring(0, 100) + '...' : description;
+    const DESCRIPTION_MAX_LENGTH = 100;
+    const truncatedDesc = description.length > DESCRIPTION_MAX_LENGTH ? description.substring(0, DESCRIPTION_MAX_LENGTH) + '...' : description;
     const shareText = `Check out ${activityName} at Mergington High School! ${truncatedDesc} Schedule: ${formattedSchedule}`;
     const shareTitle = `${activityName} - Mergington High School`;
     
     return {
       twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(currentUrl)}`,
-      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}&quote=${encodeURIComponent(shareText)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`,
       linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`,
       email: `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareText + '\n\nVisit: ' + currentUrl)}`
     };
