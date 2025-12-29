@@ -472,6 +472,36 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Function to generate social sharing URLs
+  function generateShareUrls(activityName, activityDetails) {
+    const formattedSchedule = formatSchedule(activityDetails);
+    const currentUrl = window.location.origin + window.location.pathname;
+    const description = activityDetails.description || '';
+    const DESCRIPTION_MAX_LENGTH = 100;
+    const truncatedDesc = description.length > DESCRIPTION_MAX_LENGTH ? description.substring(0, DESCRIPTION_MAX_LENGTH) + '...' : description;
+    const shareText = `Check out ${activityName} at Mergington High School! ${truncatedDesc} Schedule: ${formattedSchedule}`;
+    const shareTitle = `${activityName} - Mergington High School`;
+    
+    return {
+      twitter: `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(currentUrl)}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(currentUrl)}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(currentUrl)}`,
+      email: `mailto:?subject=${encodeURIComponent(shareTitle)}&body=${encodeURIComponent(shareText + '\n\nVisit: ' + currentUrl)}`
+    };
+  }
+
+  // Function to handle social sharing
+  function handleShare(platform, activityName, activityDetails) {
+    const shareUrls = generateShareUrls(activityName, activityDetails);
+    const url = shareUrls[platform];
+    
+    if (platform === 'email') {
+      window.location.href = url;
+    } else {
+      window.open(url, '_blank', 'width=600,height=400');
+    }
+  }
+
   // Function to render a single activity card
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
@@ -552,6 +582,20 @@ document.addEventListener("DOMContentLoaded", () => {
             .join("")}
         </ul>
       </div>
+      <div class="social-share-container">
+        <button class="social-share-button twitter" data-activity="${name}" data-platform="twitter" title="Share on Twitter">
+          ✕
+        </button>
+        <button class="social-share-button facebook" data-activity="${name}" data-platform="facebook" title="Share on Facebook">
+          ❱❱
+        </button>
+        <button class="social-share-button linkedin" data-activity="${name}" data-platform="linkedin" title="Share on LinkedIn">
+          ⓘⓝ
+        </button>
+        <button class="social-share-button email" data-activity="${name}" data-platform="email" title="Share via Email">
+          ✉
+        </button>
+      </div>
       <div class="activity-card-actions">
         ${
           currentUser
@@ -575,6 +619,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const deleteButtons = activityCard.querySelectorAll(".delete-participant");
     deleteButtons.forEach((button) => {
       button.addEventListener("click", handleUnregister);
+    });
+
+    // Add click handlers for social share buttons
+    const shareButtons = activityCard.querySelectorAll(".social-share-button");
+    shareButtons.forEach((button) => {
+      button.addEventListener("click", (event) => {
+        const activityName = event.currentTarget.dataset.activity;
+        const platform = event.currentTarget.dataset.platform;
+        handleShare(platform, activityName, details);
+      });
     });
 
     // Add click handler for register button (only when authenticated)
